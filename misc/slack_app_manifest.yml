@@ -1,0 +1,17 @@
+display_information:
+  name: snowflake-monitor
+  description: Monitoring of running, queued and blocked queries in Snowflake
+  background_color: "#00a5e0"
+features:
+  bot_user:
+    display_name: Snowflake Monitor
+    always_online: true
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - chat:write.public
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

@@ -1,0 +1,12 @@
+.*
+!/.gitignore
+!/.github
+
+__pycache__/
+*.py[cod]
+*.mypy_cache/
+
+dist/
+build/
+*.egg-info/
+*.egg
