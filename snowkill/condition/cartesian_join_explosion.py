@@ -1,8 +1,8 @@
-from snowkill.checker.abc_checker import AbstractRunningQueryChecker
+from snowkill.condition.abc_condition import AbstractRunningQueryCondition
 from snowkill.struct import Query, QueryPlan, CheckResultLevel
 
 
-class CartesianJoinExplosionChecker(AbstractRunningQueryChecker):
+class CartesianJoinExplosionCondition(AbstractRunningQueryCondition):
     def __init__(self, *, min_output_rows: int, min_explosion_rate: float, **kwargs):
         super().__init__(**kwargs)
 

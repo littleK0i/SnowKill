@@ -20,7 +20,7 @@ snowkill_storage = SnowflakeTableStorage(connection, getenv("SNOWFLAKE_TARGET_TA
 snowkill_formatter = SlackFormatter(getenv("SNOWSIGHT_BASE_URL"))
 
 checks = [
-    ExecuteDurationChecker(
+    ExecuteDurationCondition(
         warning_duration=60 * 30,  # 30 minutes for warning
         kill_duration=60 * 60,  # 60 minutes for kill
         query_filter=QueryFilter(
@@ -28,7 +28,7 @@ checks = [
             exclude_user_name=["STARTUP_ADMIN", "STARTUP_SCRIPT"],  # Exclude some specific users
         ),
     ),
-    QueuedDurationChecker(
+    QueuedDurationCondition(
         notice_duration=60 * 30,  # query was in queue for 30 minutes
         kill_duration=60 * 60 * 3,  # query was in queue for 3 hours
         query_filter=QueryFilter(

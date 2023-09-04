@@ -110,7 +110,7 @@ class QueryFilter:
         return fnmatchcase(val, pattern)
 
 
-class AbstractQueryChecker(ABC):
+class AbstractQueryCondition(ABC):
     def __init__(
         self,
         *,
@@ -165,7 +165,7 @@ class AbstractQueryChecker(ABC):
         return min(duration for duration in all_durations if duration is not None)
 
 
-class AbstractRunningQueryChecker(AbstractQueryChecker, ABC):
+class AbstractRunningQueryCondition(AbstractQueryCondition, ABC):
     @abstractmethod
     def check_custom_logic(self, query: Query, query_plan: QueryPlan) -> Optional[Tuple[CheckResultLevel, str]]:
         pass
@@ -174,7 +174,7 @@ class AbstractRunningQueryChecker(AbstractQueryChecker, ABC):
         return query.execute_duration >= self._calculate_min_duration()
 
 
-class AbstractQueuedQueryChecker(AbstractQueryChecker, ABC):
+class AbstractQueuedQueryCondition(AbstractQueryCondition, ABC):
     @abstractmethod
     def check_custom_logic(self, query: Query) -> Optional[Tuple[CheckResultLevel, str]]:
         pass
@@ -183,7 +183,7 @@ class AbstractQueuedQueryChecker(AbstractQueryChecker, ABC):
         return query.queued_duration >= self._calculate_min_duration()
 
 
-class AbstractBlockedQueryChecker(AbstractQueryChecker, ABC):
+class AbstractBlockedQueryCondition(AbstractQueryCondition, ABC):
     @abstractmethod
     def check_custom_logic(
         self, query: Query, holding_lock: Optional[HoldingLock], holding_query: Optional[Query]

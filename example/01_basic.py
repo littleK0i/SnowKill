@@ -25,39 +25,39 @@ snowkill_storage = SnowflakeTableStorage(connection, getenv("SNOWFLAKE_TARGET_TA
 snowkill_formatter = SlackFormatter(getenv("SNOWSIGHT_BASE_URL"))
 
 checks = [
-    ExecuteDurationChecker(
+    ExecuteDurationCondition(
         warning_duration=60 * 30,  # 30 minutes for warning
         kill_duration=60 * 60,  # 60 minutes for kill
     ),
-    CartesianJoinExplosionChecker(
-        min_output_rows=10_000_000,  # join emits at least 10M output rows
-        min_explosion_rate=5,  # ratio of output rows to input rows is at least 10x
-        warning_duration=60 * 1,  # 10 minutes for warning
-        kill_duration=60 * 20,  # 20 minutes for kill
-    ),
-    JoinExplosionChecker(
+    CartesianJoinExplosionCondition(
         min_output_rows=10_000_000,  # join emits at least 10M output rows
         min_explosion_rate=10,  # ratio of output rows to input rows is at least 10x
         warning_duration=60 * 10,  # 10 minutes for warning
         kill_duration=60 * 20,  # 20 minutes for kill
     ),
-    UnionWithoutAllChecker(
+    JoinExplosionCondition(
+        min_output_rows=10_000_000,  # join emits at least 10M output rows
+        min_explosion_rate=10,  # ratio of output rows to input rows is at least 10x
+        warning_duration=60 * 10,  # 10 minutes for warning
+        kill_duration=60 * 20,  # 20 minutes for kill
+    ),
+    UnionWithoutAllCondition(
         min_input_rows=10_000_000,  # at least 10M input rows for UNION without ALL
         notice_duration=60 * 10,  # 10 minutes for notice
     ),
-    StorageSpillingChecker(
+    StorageSpillingCondition(
         min_local_spilling_gb=50,  # 50Gb spill to local storage
         min_remote_spilling_gb=1,  # 1Gb spill to remote storage
         warning_duration=60 * 10,  # 10 minutes for waring
         kill_duration=60 * 20,  # 20 minutes for kill
     ),
-    QueuedDurationChecker(
+    QueuedDurationCondition(
         notice_duration=60 * 30,  # query was in queue for 30 minutes
     ),
-    BlockedDurationChecker(
+    BlockedDurationCondition(
         notice_duration=60 * 5,  # query was locked by another transaction for 5 minutes
     ),
-    EstimatedScanDurationChecker(
+    EstimatedScanDurationCondition(
         min_estimated_scan_duration=60 * 60 * 2,  # query scan is estimated to take longer than 2 hours
         warning_duration=60 * 10,  # warning after 10 minutes
         kill_duration=60 * 20,  # kill after 20 minutes

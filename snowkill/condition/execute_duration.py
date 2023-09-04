@@ -1,8 +1,8 @@
-from snowkill.checker.abc_checker import AbstractRunningQueryChecker
+from snowkill.condition.abc_condition import AbstractRunningQueryCondition
 from snowkill.struct import Query, QueryPlan, CheckResultLevel
 
 
-class ExecuteDurationChecker(AbstractRunningQueryChecker):
+class ExecuteDurationCondition(AbstractRunningQueryCondition):
     def check_custom_logic(self, query: Query, query_plan: QueryPlan):
         if self.kill_duration and query.execute_duration >= self.kill_duration:
             return CheckResultLevel.KILL, f"Query was running longer than [{self.kill_duration}] seconds"

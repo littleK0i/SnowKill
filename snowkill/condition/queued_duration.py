@@ -1,8 +1,8 @@
-from snowkill.checker.abc_checker import AbstractQueuedQueryChecker
+from snowkill.condition.abc_condition import AbstractQueuedQueryCondition
 from snowkill.struct import Query, CheckResultLevel
 
 
-class QueuedDurationChecker(AbstractQueuedQueryChecker):
+class QueuedDurationCondition(AbstractQueuedQueryCondition):
     def check_custom_logic(self, query: Query):
         if self.kill_duration and query.queued_duration >= self.kill_duration:
             return CheckResultLevel.KILL, f"Query was queued longer than [{self.kill_duration}] seconds"

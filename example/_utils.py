@@ -2,7 +2,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from logging import getLogger, StreamHandler, INFO
 from markdown import markdown
-from requests import post, Session
+from requests import Session
 from requests.adapters import HTTPAdapter
 from smtplib import SMTP
 from typing import List
@@ -37,10 +37,10 @@ def send_slack_message(slack_token: str, slack_channel: str, message_blocks: Lis
         allowed_methods=["POST"],
     )
 
-    s = Session()
-    s.mount("https://", HTTPAdapter(max_retries=retries))
+    session = Session()
+    session.mount("https://", HTTPAdapter(max_retries=retries))
 
-    response = post(
+    response = session.post(
         url="https://slack.com/api/chat.postMessage",
         headers={
             "Authorization": f"Bearer {slack_token}",

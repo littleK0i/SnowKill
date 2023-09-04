@@ -1,8 +1,8 @@
-from snowkill.checker.abc_checker import AbstractRunningQueryChecker
+from snowkill.condition.abc_condition import AbstractRunningQueryCondition
 from snowkill.struct import Query, QueryPlan, CheckResultLevel
 
 
-class UnionWithoutAllChecker(AbstractRunningQueryChecker):
+class UnionWithoutAllCondition(AbstractRunningQueryCondition):
     def __init__(self, *, min_input_rows: int, **kwargs):
         super().__init__(**kwargs)
 

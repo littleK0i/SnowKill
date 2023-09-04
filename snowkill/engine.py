@@ -6,11 +6,11 @@ from snowflake.connector import DictCursor, SnowflakeConnection
 from typing import Dict, List, Optional
 from urllib.parse import quote, urlencode
 
-from snowkill.checker.abc_checker import (
-    AbstractQueryChecker,
-    AbstractQueuedQueryChecker,
-    AbstractBlockedQueryChecker,
-    AbstractRunningQueryChecker,
+from snowkill.condition.abc_condition import (
+    AbstractQueryCondition,
+    AbstractQueuedQueryCondition,
+    AbstractBlockedQueryCondition,
+    AbstractRunningQueryCondition,
 )
 from snowkill.error import SnowKillRestApiError
 from snowkill.struct import (
@@ -53,18 +53,18 @@ class SnowKillEngine:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.executor.shutdown()
 
-    def check_and_kill_pending_queries(self, checks: List[AbstractQueryChecker]) -> List[CheckResult]:
+    def check_and_kill_pending_queries(self, conditions: List[AbstractQueryCondition]) -> List[CheckResult]:
         self._reset_query_plan_cache()
 
         check_results = []
 
-        blocked_checks = [c for c in checks if isinstance(c, AbstractBlockedQueryChecker)]
-        queued_checks = [c for c in checks if isinstance(c, AbstractQueuedQueryChecker)]
-        running_checks = [c for c in checks if isinstance(c, AbstractRunningQueryChecker)]
+        blocked_conditions = [c for c in conditions if isinstance(c, AbstractBlockedQueryCondition)]
+        queued_conditions = [c for c in conditions if isinstance(c, AbstractQueuedQueryCondition)]
+        running_conditions = [c for c in conditions if isinstance(c, AbstractRunningQueryCondition)]
 
         pending_queries = self.get_pending_queries(
-            blocked=len(blocked_checks) > 0,
-            queued=len(queued_checks) > 0,
+            blocked=len(blocked_conditions) > 0,
+            queued=len(queued_conditions) > 0,
             running=True,
         )
 
@@ -77,13 +77,13 @@ class SnowKillEngine:
             results = []
 
             if query.status == self.STATUS_BLOCKED:
-                results = [self._check_blocked_query(c, query, holding_locks.get(query.query_id)) for c in blocked_checks]
+                results = [self._check_blocked_query(c, query, holding_locks.get(query.query_id)) for c in blocked_conditions]
 
             if query.status == self.STATUS_QUEUED:
-                results = [self._check_queued_query(c, query) for c in queued_checks]
+                results = [self._check_queued_query(c, query) for c in queued_conditions]
 
             if query.status == self.STATUS_RUNNING:
-                results = [self._check_running_query(c, query) for c in running_checks]
+                results = [self._check_running_query(c, query) for c in running_conditions]
 
             # Remove empty results
             results = [r for r in results if r is not None]
@@ -101,58 +101,58 @@ class SnowKillEngine:
 
         return check_results
 
-    def _check_blocked_query(self, checker: AbstractBlockedQueryChecker, query: Query, holding_lock: Optional[HoldingLock]):
-        if not checker.check_min_duration(query):
+    def _check_blocked_query(self, condition: AbstractBlockedQueryCondition, query: Query, holding_lock: Optional[HoldingLock]):
+        if not condition.check_min_duration(query):
             return None
 
-        if not checker.check_query_filter(query):
+        if not condition.check_query_filter(query):
             return None
 
         holding_query = self.get_query_by_id(holding_lock.holding_query_id) if holding_lock else None
-        result = checker.check_custom_logic(query, holding_lock, holding_query)
+        result = condition.check_custom_logic(query, holding_lock, holding_query)
 
         if not result:
             return None
 
         level, description = result
-        level = checker.adjust_level(query, level)
+        level = condition.adjust_level(query, level)
 
         return CheckResult(
             level=level,
-            name=checker.name,
+            name=condition.name,
             description=description,
             query=query,
             holding_lock=holding_lock,
             holding_query=holding_query,
         )
 
-    def _check_queued_query(self, checker: AbstractQueuedQueryChecker, query: Query):
-        if not checker.check_min_duration(query):
+    def _check_queued_query(self, condition: AbstractQueuedQueryCondition, query: Query):
+        if not condition.check_min_duration(query):
             return None
 
-        if not checker.check_query_filter(query):
+        if not condition.check_query_filter(query):
             return None
 
-        result = checker.check_custom_logic(query)
+        result = condition.check_custom_logic(query)
 
         if not result:
             return None
 
         level, description = result
-        level = checker.adjust_level(query, level)
+        level = condition.adjust_level(query, level)
 
         return CheckResult(
             level=level,
-            name=checker.name,
+            name=condition.name,
             description=description,
             query=query,
         )
 
-    def _check_running_query(self, checker: AbstractRunningQueryChecker, query: Query):
-        if not checker.check_min_duration(query):
+    def _check_running_query(self, condition: AbstractRunningQueryCondition, query: Query):
+        if not condition.check_min_duration(query):
             return None
 
-        if not checker.check_query_filter(query):
+        if not condition.check_query_filter(query):
             return None
 
         query_plan = self._get_query_plan_from_cache(query.query_id)
@@ -160,17 +160,17 @@ class SnowKillEngine:
         if not query_plan or not query_plan.get_running_step():
             return None
 
-        result = checker.check_custom_logic(query, self._query_plan_cache[query.query_id])
+        result = condition.check_custom_logic(query, self._query_plan_cache[query.query_id])
 
         if not result:
             return None
 
         level, description = result
-        level = checker.adjust_level(query, level)
+        level = condition.adjust_level(query, level)
 
         return CheckResult(
             level=level,
-            name=checker.name,
+            name=condition.name,
             description=description,
             query=query,
             query_plan=query_plan,

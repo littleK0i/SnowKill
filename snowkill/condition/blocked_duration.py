@@ -1,10 +1,10 @@
 from typing import Optional
 
-from snowkill.checker.abc_checker import AbstractBlockedQueryChecker
+from snowkill.condition.abc_condition import AbstractBlockedQueryCondition
 from snowkill.struct import Query, CheckResultLevel, HoldingLock
 
 
-class BlockedDurationChecker(AbstractBlockedQueryChecker):
+class BlockedDurationCondition(AbstractBlockedQueryCondition):
     def check_custom_logic(
         self,
         waiting_query: Query,

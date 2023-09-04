@@ -1,19 +1,19 @@
-from snowkill.checker.abc_checker import (
-    AbstractQueryChecker,
-    AbstractQueuedQueryChecker,
-    AbstractBlockedQueryChecker,
-    AbstractRunningQueryChecker,
+from snowkill.condition.abc_condition import (
+    AbstractQueryCondition,
+    AbstractQueuedQueryCondition,
+    AbstractBlockedQueryCondition,
+    AbstractRunningQueryCondition,
     QueryFilter,
 )
 
-from snowkill.checker.blocked_duration import BlockedDurationChecker
-from snowkill.checker.cartesian_join_explosion import CartesianJoinExplosionChecker
-from snowkill.checker.estimated_scan_duration import EstimatedScanDurationChecker
-from snowkill.checker.execute_duration import ExecuteDurationChecker
-from snowkill.checker.join_explosion import JoinExplosionChecker
-from snowkill.checker.storage_spilling import StorageSpillingChecker
-from snowkill.checker.queued_duration import QueuedDurationChecker
-from snowkill.checker.union_without_all import UnionWithoutAllChecker
+from snowkill.condition.blocked_duration import BlockedDurationCondition
+from snowkill.condition.cartesian_join_explosion import CartesianJoinExplosionCondition
+from snowkill.condition.estimated_scan_duration import EstimatedScanDurationCondition
+from snowkill.condition.execute_duration import ExecuteDurationCondition
+from snowkill.condition.join_explosion import JoinExplosionCondition
+from snowkill.condition.storage_spilling import StorageSpillingCondition
+from snowkill.condition.queued_duration import QueuedDurationCondition
+from snowkill.condition.union_without_all import UnionWithoutAllCondition
 
 from snowkill.engine import SnowKillEngine
 

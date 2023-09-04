@@ -1,8 +1,8 @@
-from snowkill.checker.abc_checker import AbstractRunningQueryChecker
+from snowkill.condition.abc_condition import AbstractRunningQueryCondition
 from snowkill.struct import Query, QueryPlan, CheckResultLevel
 
 
-class StorageSpillingChecker(AbstractRunningQueryChecker):
+class StorageSpillingCondition(AbstractRunningQueryCondition):
     def __init__(self, *, min_local_spilling_gb: float, min_remote_spilling_gb: float, **kwargs):
         super().__init__(**kwargs)
 

@@ -1,8 +1,8 @@
-from snowkill.checker.abc_checker import AbstractRunningQueryChecker
+from snowkill.condition.abc_condition import AbstractRunningQueryCondition
 from snowkill.struct import Query, QueryPlan, CheckResultLevel
 
 
-class EstimatedScanDurationChecker(AbstractRunningQueryChecker):
+class EstimatedScanDurationCondition(AbstractRunningQueryCondition):
     def __init__(self, *, min_estimated_scan_duration: int, **kwargs):
         super().__init__(**kwargs)
 

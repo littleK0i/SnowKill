@@ -24,7 +24,7 @@ snowkill_storage = PostgresTableStorage(postgres_connection, getenv("POSTGRES_TA
 snowkill_formatter = SlackFormatter(getenv("SNOWSIGHT_BASE_URL"))
 
 checks = [
-    ExecuteDurationChecker(
+    ExecuteDurationCondition(
         warning_duration=60 * 30,  # 30 minutes for warning
         kill_duration=60 * 60,  # 60 minutes for kill
     ),
