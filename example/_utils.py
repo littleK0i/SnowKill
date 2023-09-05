@@ -82,9 +82,6 @@ def send_email_markdown_message(
     multipart_msg.attach(MIMEText(message_markdown_content, "plain"))
     multipart_msg.attach(MIMEText(message_html_content, "html"))
 
-    print(message_markdown_content)
-    print(message_html_content)
-
     with SMTP(host=smtp_host, port=smtp_port) as server:
         server.login(smtp_user, smtp_password)
         response = server.send_message(multipart_msg, sender_email, receiver_emails)
