@@ -21,19 +21,40 @@ SnowKill operates on present data, which normally allows it to react much faster
 5. Detect and skip previously reported queries, avoid duplicates.
 6. Send notifications about newly matched queries (via Slack, Email, etc.).
 
-## Diagram
+## Notification example
 
-![Diagram](/misc/snowkill_how_it_works.jpg)
+![Notification example 1](/misc/notification_example_1.png)
 
-## Quick lings
+## Quick links
 
 - [Getting started](https://docs.snowkill.net/getting-started)
 - [Implementation details](https://docs.snowkill.net/implementation-details)
 - [Examples](https://docs.snowkill.net/examples)
-- [Built-in conditions](https://docs.snowkill.net/condition/built-in-conditions)
-- [Built-in formatters](https://docs.snowkill.net/formatter/built-in-formatters)
-- [Built-in storages](https://docs.snowkill.net/storage/built-in-storages)
 - [Deployment best practices](https://docs.snowkill.net/deployment/best-practices)
+
+Built-in conditions:
+- [Blocked Duration](https://docs.snowkill.net/condition/built-in-conditions/blocked-duration)
+- [Cartesian Join Explosion](https://docs.snowkill.net/condition/built-in-conditions/cartesian-join-explosion)
+- [Estimated Scan Duration](https://docs.snowkill.net/condition/built-in-conditions/estimated-scan-duration)
+- [Execute Duration](https://docs.snowkill.net/condition/built-in-conditions/execute-duration)
+- [Join Explosion](https://docs.snowkill.net/condition/built-in-conditions/join-explosion)
+- [Storage Spilling](https://docs.snowkill.net/condition/built-in-conditions/storage-spilling)
+- [Queued Duration](https://docs.snowkill.net/condition/built-in-conditions/queued-duration)
+- [Union without ALL](https://docs.snowkill.net/condition/built-in-conditions/union-without-all)
+
+Built-in formatters:
+- [Markdown](https://docs.snowkill.net/formatter/built-in-formatters/markdown)
+- [Slack](https://docs.snowkill.net/formatter/built-in-formatters/slack)
+
+Built-in storages:
+- [Postgres table](https://docs.snowkill.net/storage/built-in-storages/postgres-table)
+- [Snowflake table](https://docs.snowkill.net/storage/built-in-storages/snowflake-table)
+
+## Future plans
+
+- More conditions, formatters, storages.
+- Automated testing on push.
+- Maybe some conditions for groups of queries, e.g. "more than 4 queries are queued on warehouse".
 
 ## Issues? Questions? Feedback?
 
