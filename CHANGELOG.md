@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1] - 2023-09-18
+
+- Fix calculation of amount of truncated lines during formatting.
+
 ## [0.4.0] - 2023-09-04
 
 - Rename all "checkers" to "conditions" for more clarity.

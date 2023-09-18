@@ -38,8 +38,10 @@ class AbstractFormatter(ABC):
 
         if original_query_parts_len > self.QUERY_TEXT_MAX_LINES:
             query_parts = query_parts[0 : self.QUERY_TEXT_MAX_LINES - 1]
+            truncated_query_parts_len = len(query_parts)
+
             query_parts.append("")
-            query_parts.append(f".......... [{original_query_parts_len - self.QUERY_TEXT_MAX_LINES - 1}] lines were truncated ..........")
+            query_parts.append(f".......... [{original_query_parts_len - truncated_query_parts_len}] lines were truncated ..........")
 
         return "\n".join(query_parts)
 
