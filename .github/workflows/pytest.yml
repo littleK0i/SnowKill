@@ -1,0 +1,47 @@
+name: Pytest
+
+on:
+  push:
+    paths:
+      - "**.py"
+  workflow_dispatch:
+
+jobs:
+  pytest:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: snowkill_test
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      POSTGRES_DSN: "host=localhost port=5432 user=postgres password=postgres dbname=postgres"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install
+        run: pip install -e .[dev,postgres]
+
+      - name: Run pytest
+        run: test/run_test.sh

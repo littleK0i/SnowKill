@@ -1,0 +1,24 @@
+-- SQL script to set up a new Snowflake account for tests and GitHub workflows
+-- Replace replace <password> placeholder statement with an actual password of your choice
+
+SET PASSWORD = '<password>';  -- replace with actual password of your choice
+
+---
+
+USE ROLE ACCOUNTADMIN;
+
+CREATE ROLE SNOWKILL_ADMIN_TEST;
+
+CREATE WAREHOUSE SNOWKILL_WH
+WAREHOUSE_SIZE = 'XSMALL'
+AUTO_SUSPEND = 60
+AUTO_RESUME = TRUE
+INITIALLY_SUSPENDED = TRUE;
+
+CREATE USER SNOWKILL_TEST
+PASSWORD = $PASSWORD
+DEFAULT_ROLE = SNOWKILL_ADMIN_TEST
+DEFAULT_WAREHOUSE = SNOWKILL_WH;
+
+GRANT ROLE SNOWKILL_ADMIN_TEST TO USER SNOWKILL_TEST;
+GRANT ROLE ACCOUNTADMIN TO ROLE SNOWKILL_ADMIN_TEST;
