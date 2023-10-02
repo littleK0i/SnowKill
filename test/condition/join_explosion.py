@@ -10,7 +10,7 @@ def test_condition_join_explosion(helper):
         query_cur.execute_async(f"""
             SELECT *
             FROM snowflake_sample_data.tpch_sf10.orders a
-                JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_orderdate=b.o_orderdate)
+                JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_custkey=b.o_custkey)
         """)
 
         helper.sleep(60)
