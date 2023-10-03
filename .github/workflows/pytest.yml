@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         group: [ 1, 2, 3 ]
+      fail-fast: false
 
     services:
       postgres:
