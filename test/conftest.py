@@ -18,17 +18,21 @@ class Helper:
         pass
 
     @contextmanager
-    def init_connection(self, query_tag=None) -> Iterator[SnowflakeConnection]:
+    def init_connection(self, query_tag=None, no_scale_wh=False) -> Iterator[SnowflakeConnection]:
         options = {
             "account": environ.get("SNOWFLAKE_ACCOUNT"),
             "user": environ.get("SNOWFLAKE_USER"),
             "password": environ.get("SNOWFLAKE_PASSWORD"),
+            "session_parameters": {
+                "USE_CACHED_RESULT": "FALSE",
+            },
         }
 
         if query_tag:
-            options["session_parameters"] = {
-                "QUERY_TAG": query_tag,
-            }
+            options["session_parameters"]["QUERY_TAG"] = query_tag
+
+        if no_scale_wh:
+            options["warehouse"] = "SNOWKILL_NO_SCALE_WH"
 
         connection = connect(**options)
 

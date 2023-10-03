@@ -9,7 +9,7 @@ def test_condition_execute_duration(helper):
 
         query_cur.execute_async(f"""
             SELECT *
-            FROM snowflake_sample_data.tpch_sf1000.customer a
+            FROM snowflake_sample_data.tpch_sf100.customer a
                 JOIN snowflake_sample_data.tpch_sf100.customer b ON (a.c_custkey > b.c_custkey)
         """)
 

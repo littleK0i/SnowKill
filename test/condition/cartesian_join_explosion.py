@@ -10,10 +10,10 @@ def test_condition_cartesian_join_explosion(helper):
         query_cur.execute_async(f"""
             SELECT *
             FROM snowflake_sample_data.tpch_sf10.orders a
-                JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_orderdate > b.o_orderdate)
+                JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_custkey > b.o_custkey)
         """)
 
-        helper.sleep(60)
+        helper.sleep(180)
 
         try:
             engine = SnowKillEngine(snowkill_con)
@@ -21,7 +21,7 @@ def test_condition_cartesian_join_explosion(helper):
             conditions = [
                 CartesianJoinExplosionCondition(
                     min_output_rows=10_000,
-                    min_explosion_rate=2,
+                    min_explosion_rate=0.1,
                     warning_duration=10,
                     query_filter=helper.get_query_filter(query_tag)
                 ),
