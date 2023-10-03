@@ -7,4 +7,4 @@
 
 cd "${0%/*}"
 
-pytest -W ignore::DeprecationWarning -n 10 --tb=short */*.py
+pytest -W ignore::DeprecationWarning --tb=short */*.py
