@@ -49,4 +49,4 @@ def test_storage_snowflake(helper):
             assert len(processed_check_results) == 1
 
         finally:
-            query_cur.abort_query(query_cur.sfqid)
+            helper.kill_last_query(query_cur)

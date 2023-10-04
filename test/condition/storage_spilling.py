@@ -37,4 +37,4 @@ def test_condition_storage_spilling(helper):
             assert check_results[0].level == CheckResultLevel.WARNING
             assert check_results[0].query.query_id == query_cur.sfqid
         finally:
-            query_cur.abort_query(query_cur.sfqid)
+            helper.kill_last_query(query_cur)

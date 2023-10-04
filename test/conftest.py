@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from os import environ
 from pytest import fixture
-from snowflake.connector import connect, SnowflakeConnection
+from snowflake.connector import connect, SnowflakeConnection, InterfaceError
 from snowkill import QueryFilter
 from time import sleep
 from typing import Iterator
@@ -49,6 +49,12 @@ class Helper:
 
     def sleep(self, duration):
         sleep(duration)
+
+    def kill_last_query(self, cursor):
+        try:
+            cursor.abort_query(cursor.sfqid)
+        except InterfaceError:
+            pass
 
 
 @fixture(scope="session")

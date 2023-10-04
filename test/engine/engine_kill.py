@@ -15,25 +15,28 @@ def test_engine_kill(helper):
 
         helper.sleep(30)
 
-        engine = SnowKillEngine(snowkill_con)
+        try:
+            engine = SnowKillEngine(snowkill_con)
 
-        conditions = [
-            ExecuteDurationCondition(
-                kill_duration=10,
-                query_filter=helper.get_query_filter(query_tag),
-                enable_kill=True,
-            ),
-        ]
+            conditions = [
+                ExecuteDurationCondition(
+                    kill_duration=10,
+                    query_filter=helper.get_query_filter(query_tag),
+                    enable_kill=True,
+                ),
+            ]
 
-        check_results = engine.check_and_kill_pending_queries(conditions)
+            check_results = engine.check_and_kill_pending_queries(conditions)
 
-        assert len(check_results) == 1
+            assert len(check_results) == 1
 
-        assert check_results[0].name == "ExecuteDurationCondition"
-        assert check_results[0].level == CheckResultLevel.KILL
-        assert check_results[0].query.query_id == query_cur.sfqid
+            assert check_results[0].name == "ExecuteDurationCondition"
+            assert check_results[0].level == CheckResultLevel.KILL
+            assert check_results[0].query.query_id == query_cur.sfqid
 
-        # Make sure query was actually killed
-        check_results = engine.check_and_kill_pending_queries(conditions)
+            # Make sure query was actually killed
+            check_results = engine.check_and_kill_pending_queries(conditions)
 
-        assert len(check_results) == 0
+            assert len(check_results) == 0
+        finally:
+            helper.kill_last_query(query_cur)
