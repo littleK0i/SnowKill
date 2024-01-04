@@ -34,6 +34,8 @@ class SnowKillEngine:
     REST_ENDPOINT_QUERY_LIST = "/monitoring/queries"
     REST_ENDPOINT_QUERY_PLAN = "/monitoring/query-plan-data"
 
+    REST_ENDPOINT_QUERY_PLAN_TIMEOUT = 30
+
     STATUS_QUEUED = "QUEUED"
     STATUS_BLOCKED = "BLOCKED"
     STATUS_RUNNING = "RUNNING"
@@ -323,8 +325,15 @@ class SnowKillEngine:
             url=f"{self.REST_ENDPOINT_QUERY_PLAN}/{quote(query_id)}",
             method="get",
             client="rest",
+            timeout=self.REST_ENDPOINT_QUERY_PLAN_TIMEOUT,
         )
 
+        # Request was terminated by timeout, which means plan is likely not available yet
+        # Do not check such query
+        if not response:
+            return None
+
+        # Something is wrong with request, attention is required
         if not response.get("success"):
             raise SnowKillRestApiError(response.get("code"), response.get("message"))
 
