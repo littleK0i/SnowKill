@@ -26,7 +26,7 @@ def test_condition_queued_duration(helper):
             FROM snowflake_sample_data.tpch_sf1000.orders
         """)
 
-        helper.sleep(120)
+        helper.sleep(180)
 
         try:
             engine = SnowKillEngine(snowkill_con)

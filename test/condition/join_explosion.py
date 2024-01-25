@@ -13,7 +13,7 @@ def test_condition_join_explosion(helper):
                 JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_orderdate=b.o_orderdate)
         """)
 
-        helper.sleep(180)
+        helper.sleep(60)
 
         try:
             engine = SnowKillEngine(snowkill_con)
