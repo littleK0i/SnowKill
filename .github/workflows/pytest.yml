@@ -12,11 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    strategy:
-      matrix:
-        group: [ 1, 2, 3 ]
-      fail-fast: false
-
     services:
       postgres:
         image: postgres
@@ -49,4 +44,4 @@ jobs:
         run: pip install -e .[dev,postgres]
 
       - name: Run pytest
-        run: pytest -W ignore::DeprecationWarning --tb=short --splits 3 --group ${{ matrix.group }} test/*/*.py
+        run: pytest -W ignore::DeprecationWarning --tb=short test/*/*.py
