@@ -2,7 +2,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from ipaddress import IPv4Address
 from json import loads as json_loads, JSONDecodeError
-from snowflake.connector import DictCursor, SnowflakeConnection
+from logging import getLogger, NullHandler
+from snowflake.connector import DictCursor, SnowflakeConnection, Error as SnowflakeError
 from typing import Dict, List, Optional
 from urllib.parse import quote, urlencode
 
@@ -27,7 +28,12 @@ from snowkill.struct import (
     Session,
     HoldingLock,
     User,
+    dataclass_to_json_str,
 )
+
+
+logger = getLogger(__name__)
+logger.addHandler(NullHandler())
 
 
 class SnowKillEngine:
@@ -40,9 +46,12 @@ class SnowKillEngine:
     STATUS_BLOCKED = "BLOCKED"
     STATUS_RUNNING = "RUNNING"
 
-    def __init__(self, connection: SnowflakeConnection, max_workers=8):
+    def __init__(self, connection: SnowflakeConnection, max_workers=8, debug_mode=False):
         self.connection = connection
         self.executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix=self.__class__.__name__)
+
+        self.logger = logger
+        self.debug_mode = debug_mode
 
         self._user_cache: Dict[str, User] = {}
         self._query_plan_cache: Dict[str, QueryPlan] = {}
@@ -157,7 +166,14 @@ class SnowKillEngine:
         if not condition.check_query_filter(query):
             return None
 
-        query_plan = self._get_query_plan_from_cache(query.query_id)
+        try:
+            query_plan = self._get_query_plan_from_cache(query.query_id)
+        except SnowflakeError as e:
+            if self.debug_mode:
+                self.logger.debug(f"Unexpected error [{e.__class__.__name__}] while loading query plan for query:\n"
+                                  f"{dataclass_to_json_str(query)}")
+
+            raise e
 
         if not query_plan or not query_plan.get_running_step():
             return None
