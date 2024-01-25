@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.4] - 2024-01-25
+
+- Catch any exception during debug mode. Exception hierarchy and wrapping in Snowflake driver is very confusing.
+
 ## [0.4.3] - 2024-01-25
 
 - Introduce (temporary?) debug mode and debug logger to help identify rare issues with 504 Gateway Timeout response while loading query plan for very specific queries.

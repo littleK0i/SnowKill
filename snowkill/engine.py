@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from ipaddress import IPv4Address
 from json import loads as json_loads, JSONDecodeError
 from logging import getLogger, NullHandler
-from snowflake.connector import DictCursor, SnowflakeConnection, Error as SnowflakeError
+from snowflake.connector import DictCursor, SnowflakeConnection
 from typing import Dict, List, Optional
 from urllib.parse import quote, urlencode
 
@@ -168,7 +168,7 @@ class SnowKillEngine:
 
         try:
             query_plan = self._get_query_plan_from_cache(query.query_id)
-        except SnowflakeError as e:
+        except Exception as e:
             if self.debug_mode:
                 self.logger.debug(f"Unexpected error [{e.__class__.__name__}] while loading query plan for query:\n"
                                   f"{dataclass_to_json_str(query)}")
