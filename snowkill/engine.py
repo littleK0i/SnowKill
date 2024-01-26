@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from ipaddress import IPv4Address
 from json import loads as json_loads, JSONDecodeError
 from logging import getLogger, NullHandler
-from snowflake.connector import DictCursor, SnowflakeConnection
+from snowflake.connector import DictCursor, SnowflakeConnection, Error as SnowflakeError
 from typing import Dict, List, Optional
 from urllib.parse import quote, urlencode
 
@@ -46,12 +46,10 @@ class SnowKillEngine:
     STATUS_BLOCKED = "BLOCKED"
     STATUS_RUNNING = "RUNNING"
 
-    def __init__(self, connection: SnowflakeConnection, max_workers=8, debug_mode=False):
+    def __init__(self, connection: SnowflakeConnection, max_workers=8):
         self.connection = connection
         self.executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix=self.__class__.__name__)
-
         self.logger = logger
-        self.debug_mode = debug_mode
 
         self._user_cache: Dict[str, User] = {}
         self._query_plan_cache: Dict[str, QueryPlan] = {}
@@ -166,14 +164,7 @@ class SnowKillEngine:
         if not condition.check_query_filter(query):
             return None
 
-        try:
-            query_plan = self._get_query_plan_from_cache(query.query_id)
-        except Exception as e:
-            if self.debug_mode:
-                self.logger.debug(f"Unexpected error [{e.__class__.__name__}] while loading query plan for query:\n"
-                                  f"{dataclass_to_json_str(query)}")
-
-            raise e
+        query_plan = self._get_query_plan_from_cache(query.query_id)
 
         if not query_plan or not query_plan.get_running_step():
             return None
@@ -337,19 +328,24 @@ class SnowKillEngine:
         return queries
 
     def get_query_plan(self, query_id: str):
-        response = self.connection.rest.request(
-            url=f"{self.REST_ENDPOINT_QUERY_PLAN}/{quote(query_id)}",
-            method="get",
-            client="rest",
-            timeout=self.REST_ENDPOINT_QUERY_PLAN_TIMEOUT,
-        )
+        try:
+            response = self.connection.rest.request(
+                url=f"{self.REST_ENDPOINT_QUERY_PLAN}/{quote(query_id)}",
+                method="get",
+                client="rest",
+                timeout=self.REST_ENDPOINT_QUERY_PLAN_TIMEOUT,
+                _no_retry=True,
+            )
+        except SnowflakeError as e:
+            logger.warning(f"Could not load query plan for query_id [{query_id}] due to [{e.__class__.__name__}]")
+            response = None
 
-        # Request was terminated by timeout, which means plan is likely not available yet
-        # Do not check such query
+        # Request was terminated due to error or timeout
+        # Query plan is not available
         if not response:
             return None
 
-        # Something is wrong with request, attention is required
+        # Something is wrong with response, attention is required
         if not response.get("success"):
             raise SnowKillRestApiError(response.get("code"), response.get("message"))
 

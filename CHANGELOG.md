@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.5] - 2024-01-26
+
+- Finalize debug message and exception handling when query plan is not available for running queries.
+
 ## [0.4.4] - 2024-01-25
 
 - Catch any exception during debug mode. Exception hierarchy and wrapping in Snowflake driver is very confusing.
