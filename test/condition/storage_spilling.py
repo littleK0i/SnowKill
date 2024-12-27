@@ -13,7 +13,7 @@ def test_condition_storage_spilling(helper):
                 JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_custkey > b.o_custkey)
         """)
 
-        helper.sleep(120)
+        helper.sleep(180)
 
         try:
             engine = SnowKillEngine(snowkill_con)
@@ -26,8 +26,6 @@ def test_condition_storage_spilling(helper):
                     query_filter=helper.get_query_filter(query_tag)
                 ),
             ]
-
-            print(dataclass_to_json_str(engine.get_query_plan(query_cur.sfqid)))
 
             check_results = engine.check_and_kill_pending_queries(conditions)
 
