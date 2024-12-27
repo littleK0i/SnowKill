@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.0] - 2024-12-27
+
+- Introduce `SnowflakeHybridTableStorage` based on Unistore. Please note, Hybrid Tables are no longer available for Trial accounts, so it may not work with usual tests.
+
 ## [0.4.5] - 2024-01-26
 
 - Finalize debug message and exception handling when query plan is not available for running queries.

@@ -24,5 +24,14 @@ from snowkill.formatter.slack import SlackFormatter
 from snowkill.storage.abc_storage import AbstractStorage
 from snowkill.storage.snowflake_table import SnowflakeTableStorage
 
-from snowkill.struct import CheckResult, CheckResultLevel, Query, QueryPlan, dataclass_to_json_str, dataclass_to_dict_recursive
+from snowkill.struct import (
+    CheckResult,
+    CheckResultLevel,
+    Query,
+    QueryPlan,
+    Session,
+    User,
+    dataclass_to_json_str,
+    dataclass_to_dict_recursive,
+)
 from snowkill.version import __version__
