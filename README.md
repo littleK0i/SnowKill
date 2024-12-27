@@ -49,6 +49,7 @@ Built-in formatters:
 Built-in storages:
 - [Postgres table](https://docs.snowkill.net/storage/built-in-storages/postgres-table)
 - [Snowflake table](https://docs.snowkill.net/storage/built-in-storages/snowflake-table)
+- [Snowflake hybrid table](https://docs.snowkill.net/storage/built-in-storages/snowflake-hybrid-table)
 
 ## Future plans
 
@@ -63,6 +64,6 @@ Please use GitHub "Issues" to report bugs and technical problems.
 Please use GitHub "Discussions" to ask questions and provide feedback.
 
 ## Created by
-[Vitaly Markov](https://www.linkedin.com/in/markov-vitaly/), 2023
+[Vitaly Markov](https://www.linkedin.com/in/markov-vitaly/), 2025
 
 Enjoy!
