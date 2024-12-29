@@ -13,7 +13,7 @@ def test_condition_execute_duration(helper):
                 JOIN snowflake_sample_data.tpch_sf100.customer b ON (a.c_custkey > b.c_custkey)
         """)
 
-        helper.sleep(30)
+        helper.sleep(60)
 
         try:
             engine = SnowKillEngine(snowkill_con)
