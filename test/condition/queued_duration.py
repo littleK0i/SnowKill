@@ -4,7 +4,7 @@ from snowkill import *
 def test_condition_queued_duration(helper):
     query_tag = "pytest:queued_duration"
 
-    with helper.init_connection(query_tag, True) as query_con, helper.init_connection() as snowkill_con:
+    with helper.init_connection(query_tag, no_scale_wh=True) as query_con, helper.init_connection() as snowkill_con:
         query1_cur = query_con.cursor()
         query2_cur = query_con.cursor()
 
@@ -16,7 +16,7 @@ def test_condition_queued_duration(helper):
             FROM snowflake_sample_data.tpch_sf100.orders
         """)
 
-        helper.sleep(1)
+        helper.sleep(10)
 
         query2_cur.execute_async(f"""
             SELECT *
@@ -26,7 +26,7 @@ def test_condition_queued_duration(helper):
             FROM snowflake_sample_data.tpch_sf1000.orders
         """)
 
-        helper.sleep(180)
+        helper.sleep(120)
 
         try:
             engine = SnowKillEngine(snowkill_con)

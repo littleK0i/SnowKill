@@ -11,9 +11,10 @@ def test_condition_storage_spilling(helper):
             SELECT *
             FROM snowflake_sample_data.tpch_sf10.orders a
                 JOIN snowflake_sample_data.tpch_sf10.orders b ON (a.o_custkey > b.o_custkey)
+            ORDER BY a.o_custkey, b.o_custkey
         """)
 
-        helper.sleep(180)
+        helper.sleep(120)
 
         try:
             engine = SnowKillEngine(snowkill_con)
