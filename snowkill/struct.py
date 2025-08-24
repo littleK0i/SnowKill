@@ -26,7 +26,7 @@ class Session:
 
     client_application: str
     client_environment: Dict[str, Any]
-    client_net_address: IPv4Address
+    client_net_address: Optional[IPv4Address]
     client_support_info: str
 
     user_name: str
