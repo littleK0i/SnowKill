@@ -28,7 +28,6 @@ from snowkill.struct import (
     Session,
     HoldingLock,
     User,
-    dataclass_to_json_str,
 )
 
 
@@ -286,7 +285,7 @@ class SnowKillEngine:
                 session_id=s["idAsString"],
                 client_application=s["clientApplication"],
                 client_environment=self._try_parse_json(s["clientEnvironment"]),
-                client_net_address=IPv4Address(s["clientNetAddress"]),
+                client_net_address=IPv4Address(s["clientNetAddress"]) if s["clientNetAddress"] is not None else None,
                 client_support_info=s["clientSupportInfo"],
                 user_name=s["userName"],
             )
@@ -498,6 +497,8 @@ class SnowKillEngine:
         )
 
     def _try_parse_json(self, val: str):
+        if val is None:
+            return {}
         try:
             return json_loads(val)
         except JSONDecodeError:
