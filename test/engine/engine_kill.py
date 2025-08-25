@@ -34,6 +34,8 @@ def test_engine_kill(helper):
             assert check_results[0].level == CheckResultLevel.KILL
             assert check_results[0].query.query_id == query_cur.sfqid
 
+            helper.sleep(10)
+
             # Make sure query was actually killed
             check_results = engine.check_and_kill_pending_queries(conditions)
 
