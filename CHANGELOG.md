@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.1] - 2025-08-25
+
+- Fix `SYSTEM` sessions causing errors due to unexpectedly having less information than normal sessions (thanks to Daniel Reeves).
+
 ## [0.5.0] - 2024-12-27
 
 - Introduce `SnowflakeHybridTableStorage` based on Unistore. Please note, Hybrid Tables are no longer available for Trial accounts, so it may not work with usual tests.
